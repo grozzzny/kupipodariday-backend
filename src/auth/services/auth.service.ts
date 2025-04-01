@@ -6,7 +6,7 @@ import { User } from '../../users/entities/user.entity'
 import { CreateUserDto } from '../../users/dto/create-user.dto'
 import { SigninUserDto } from '../dto/signin-user.dto'
 import { PayloadUser } from '../interfaces/payload-user.interface'
-import Helper from "../../utils/Helper";
+import Helper from '../../utils/Helper'
 
 @Injectable()
 export class AuthService {

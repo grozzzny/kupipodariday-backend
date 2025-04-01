@@ -4,6 +4,7 @@ import { QueryFailedError } from 'typeorm'
 import { Logger } from 'winston'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
@@ -12,8 +13,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
 
-    let status = exception.status || 500
-    let message = exception.message || 'Internal Server Error'
+    let status: number = exception.status || 500
+    let message: string = exception.message || 'Internal Server Error'
 
     if (exception instanceof QueryFailedError && exception.driverError.code === '23505') {
       status = 409

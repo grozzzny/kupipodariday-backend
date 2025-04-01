@@ -10,6 +10,8 @@ import { WishesModule } from './wishes/wishes.module'
 import { WishlistsModule } from './wishlists/wishlists.module'
 import { OffersModule } from './offers/offers.module'
 import { AuthModule } from './auth/auth.module'
+import { APP_FILTER } from '@nestjs/core'
+import { GlobalExceptionFilter } from './filters/global-exception.filter'
 
 @Module({
   imports: [
@@ -31,6 +33,12 @@ import { AuthModule } from './auth/auth.module'
     WishlistsModule,
     OffersModule,
     AuthModule
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter
+    }
   ]
 })
 export class AppModule {}

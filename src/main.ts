@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [/\/localhost:\d+$/]
   })
-  app.useGlobalPipes(new ValidationPipe({ transform: true }))
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }))
   await app.listen(PORT)
   Logger.log(`🚀 Server running on http://localhost:${PORT}`, 'Bootstrap')
 }

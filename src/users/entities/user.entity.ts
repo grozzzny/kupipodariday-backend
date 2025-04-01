@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Up
 import { Wish } from '../../wishes/entities/wish.entity'
 import { Offer } from '../../offers/entities/offer.entity'
 import { Wishlist } from '../../wishlists/entities/wishlist.entity'
-import { Exclude } from 'class-transformer'
+import { Exclude, Expose } from 'class-transformer'
 
 @Entity('users')
 export class User {
@@ -19,6 +19,7 @@ export class User {
   avatar: string
 
   @Column({ unique: true })
+  @Expose({ groups: ['profile'] })
   email: string
 
   @Column()

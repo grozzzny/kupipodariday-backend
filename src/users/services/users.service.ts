@@ -22,11 +22,11 @@ export class UsersService {
     return plainToInstance(User, user)
   }
 
-  async findOne(queryFilter: FindOptionsWhere<User>): Promise<User> {
+  async findOne(queryFilter: FindOptionsWhere<User>, showEmail = false): Promise<User> {
     const user = await this.usersRepository.findOne({ where: queryFilter })
     if (!user) throw new NotFoundException(`Пользователь не найден`)
 
-    return plainToInstance(User, user)
+    return plainToInstance(User, user, showEmail ? { groups: ['profile'] } : undefined)
   }
 
   async findByUsername(username: string): Promise<User | null> {
@@ -52,13 +52,13 @@ export class UsersService {
     return plainToInstance(User, users)
   }
 
-  async updateOne(queryFilter: FindOptionsWhere<User>, updateData: UpdateUserDto): Promise<User> {
+  async updateOne(queryFilter: FindOptionsWhere<User>, updateData: UpdateUserDto, showEmail = false): Promise<User> {
     if (updateData.password) {
       updateData.password = await Helper.hashedPassword(updateData.password)
     }
 
     await this.usersRepository.update(queryFilter, updateData)
 
-    return this.findOne(queryFilter)
+    return this.findOne(queryFilter, showEmail)
   }
 }

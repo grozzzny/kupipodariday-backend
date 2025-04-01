@@ -14,12 +14,12 @@ export class UsersController {
 
   @Get('me')
   async getProfile(@GetUser() user: User): Promise<User> {
-    return this.usersService.findOne({ id: user.id })
+    return this.usersService.findOne({ id: user.id }, true)
   }
 
   @Patch('me')
   async updateProfile(@GetUser() user: User, @Body() updateData: UpdateUserDto): Promise<User> {
-    return this.usersService.updateOne({ id: user.id }, updateData)
+    return this.usersService.updateOne({ id: user.id }, updateData, true)
   }
 
   @Get('me/wishes')

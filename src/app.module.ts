@@ -12,9 +12,22 @@ import { OffersModule } from './offers/offers.module'
 import { AuthModule } from './auth/auth.module'
 import { APP_FILTER } from '@nestjs/core'
 import { GlobalExceptionFilter } from './filters/global-exception.filter'
+import { WinstonModule } from 'nest-winston'
+import * as winston from 'winston'
 
 @Module({
   imports: [
+    WinstonModule.forRoot({
+      levels: {
+        critical_error: 0,
+        error: 1,
+        info: 4
+      },
+      transports: [
+        new winston.transports.Console({ format: winston.format.simple() }),
+        new winston.transports.File({ filename: 'error.log', level: 'error' })
+      ]
+    }),
     ConfigModule.forRoot({
       isGlobal: true
     }),

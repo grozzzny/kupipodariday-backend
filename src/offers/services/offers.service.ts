@@ -1,12 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { FindOptionsWhere, Repository } from 'typeorm'
+import { plainToInstance } from 'class-transformer'
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm'
 import { Offer } from '../entities/offer.entity'
 import { Wish } from '../../wishes/entities/wish.entity'
 import { CreateOfferDto } from '../dto/create-offer.dto'
 import { User } from '../../users/entities/user.entity'
-import { UpdateOfferDto } from '../dto/update-offer.dto'
-import { plainToInstance } from 'class-transformer'
 
 @Injectable()
 export class OffersService {
@@ -14,32 +13,52 @@ export class OffersService {
     @InjectRepository(Offer)
     private offersRepository: Repository<Offer>,
     @InjectRepository(Wish)
-    private wishesRepository: Repository<Wish>
+    private wishesRepository: Repository<Wish>,
+    private readonly dataSource: DataSource
   ) {}
 
   async create(user: User, createOfferDto: CreateOfferDto): Promise<Offer> {
-    const item = await this.wishesRepository.findOne({
-      where: { id: createOfferDto.itemId },
-      relations: ['offers']
-    })
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
 
-    if (!item) throw new NotFoundException('Подарок не найден')
+    try {
+      const item = await queryRunner.manager.findOne(Wish, {
+        where: { id: createOfferDto.itemId },
+        relations: ['owner', 'offers']
+      })
 
-    const totalOffers = item.offers.reduce((sum, offer) => sum + offer.amount, 0)
-    if (totalOffers + createOfferDto.amount > item.price) {
-      throw new BadRequestException('Сумма превышает стоимость подарка')
+      if (!item) throw new NotFoundException('Подарок не найден')
+
+      if (item.owner.id === user.id) {
+        throw new ForbiddenException('Вы не можете платить за собственный подарок')
+      }
+
+      const totalOffers = item.offers.reduce((sum, offer) => sum + Number(offer.amount), 0)
+      const newTotal = totalOffers + createOfferDto.amount
+
+      if (newTotal > item.price) {
+        throw new BadRequestException('Сумма превышает стоимость подарка')
+      }
+
+      const offer = queryRunner.manager.create(Offer, {
+        amount: createOfferDto.amount,
+        hidden: createOfferDto.hidden || false,
+        user,
+        item
+      })
+
+      await queryRunner.manager.update(Wish, { id: item.id }, { raised: newTotal })
+      await queryRunner.manager.save(offer)
+      await queryRunner.commitTransaction()
+
+      return plainToInstance(Offer, offer)
+    } catch (error) {
+      await queryRunner.rollbackTransaction()
+      throw error
+    } finally {
+      await queryRunner.release()
     }
-
-    const offer = this.offersRepository.create({
-      amount: createOfferDto.amount,
-      hidden: createOfferDto.hidden || false,
-      user,
-      item
-    })
-
-    const newOffer = await this.offersRepository.save(offer)
-
-    return plainToInstance(Offer, newOffer)
   }
 
   async findAll(): Promise<Offer[]> {
@@ -75,22 +94,5 @@ export class OffersService {
     if (!offer) throw new NotFoundException('Предложение не найдено')
 
     return plainToInstance(Offer, offer)
-  }
-
-  // ???
-  async updateOne(queryFilter: FindOptionsWhere<Offer>, updateData: UpdateOfferDto) {
-    // return this.offersRepository.update(queryFilter, updateData)
-    const offer = await this.offersRepository.findOne({ where: queryFilter })
-
-    if (!offer) {
-      throw new NotFoundException('Предложение не найдено')
-    }
-
-    await this.offersRepository.update(queryFilter, updateData)
-    return this.offersRepository.findOne({ where: queryFilter, relations: ['user', 'item'] })
-  }
-
-  async removeOne(queryFilter: FindOptionsWhere<Offer>): Promise<void> {
-    await this.offersRepository.delete(queryFilter)
   }
 }

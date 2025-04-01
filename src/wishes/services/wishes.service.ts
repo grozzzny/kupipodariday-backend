@@ -16,7 +16,8 @@ export class WishesService {
 
   async create(userId: number, createWishDto: CreateWishDto): Promise<Wish> {
     const wish = this.wishesRepository.create({ ...createWishDto, owner: { id: userId } })
-    return this.wishesRepository.save(wish)
+    await this.wishesRepository.save(wish)
+    return this.findOne({ id: wish.id })
   }
 
   async findOne(queryFilter: FindOptionsWhere<Wish>): Promise<Wish> {
@@ -33,7 +34,8 @@ export class WishesService {
   async findLast(): Promise<Wish[]> {
     const wishes = await this.wishesRepository.find({
       order: { createdAt: 'DESC' },
-      relations: ['owner', 'offers', 'offers.user']
+      relations: ['owner', 'offers', 'offers.user'],
+      take: 40
     })
 
     return plainToInstance(Wish, wishes)
@@ -42,14 +44,11 @@ export class WishesService {
   async findTop(): Promise<Wish[]> {
     const wishes = await this.wishesRepository.find({
       order: { copied: 'DESC' },
-      relations: ['owner', 'offers', 'offers.user']
+      relations: ['owner', 'offers', 'offers.user'],
+      take: 20
     })
 
     return plainToInstance(Wish, wishes)
-  }
-
-  async findAll(): Promise<Wish[]> {
-    return this.wishesRepository.find({ relations: ['owner', 'offers'] })
   }
 
   async updateOne(queryFilter: FindOptionsWhere<Wish>, userId: number, updateData: UpdateWishDto): Promise<Wish> {

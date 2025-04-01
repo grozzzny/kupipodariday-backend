@@ -22,7 +22,6 @@ export class UsersController {
     return this.usersService.updateOne({ id: user.id }, updateData)
   }
 
-  // ???
   @Get('me/wishes')
   async getProfileWishes(@GetUser() user: User): Promise<Wish[]> {
     return this.usersService.getUserWishes({ id: user.id })
@@ -38,7 +37,6 @@ export class UsersController {
     return this.usersService.findOne({ username })
   }
 
-  // ???
   @Get(':username/wishes')
   async getUserWishes(@Param('username') username: string): Promise<Wish[]> {
     return this.usersService.getUserWishes({ username })

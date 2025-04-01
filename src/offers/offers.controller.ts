@@ -4,7 +4,7 @@ import { OffersService } from './services/offers.service'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { GetUser } from '../auth/decorators/get-user.decorator'
 import { User } from '../users/entities/user.entity'
-import {Offer} from "./entities/offer.entity";
+import { Offer } from './entities/offer.entity'
 
 @Controller('offers')
 @UseGuards(JwtAuthGuard)

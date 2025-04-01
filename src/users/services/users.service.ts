@@ -17,7 +17,9 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.usersRepository.create(createUserDto)
-    return this.usersRepository.save(user)
+    await this.usersRepository.save(user)
+
+    return plainToInstance(User, user)
   }
 
   async findOne(queryFilter: FindOptionsWhere<User>): Promise<User> {
@@ -32,12 +34,14 @@ export class UsersService {
   }
 
   async getUserWishes(queryFilter: FindOptionsWhere<User>): Promise<Wish[]> {
-    return this.usersRepository
+    const wishes = await this.usersRepository
       .findOne({
         where: queryFilter,
         relations: ['wishes', 'wishes.owner', 'wishes.offers', 'wishes.offers.user']
       })
       .then((user) => user?.wishes || [])
+
+    return plainToInstance(Wish, wishes)
   }
 
   async findMany(search: string): Promise<User[]> {
@@ -56,9 +60,5 @@ export class UsersService {
     await this.usersRepository.update(queryFilter, updateData)
 
     return this.findOne(queryFilter)
-  }
-
-  async removeOne(queryFilter: FindOptionsWhere<User>): Promise<void> {
-    await this.usersRepository.delete(queryFilter)
   }
 }

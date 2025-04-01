@@ -3,5 +3,6 @@ declare namespace NodeJS {
     PORT: string
     POSTGRES_URI: string
     NODE_ENV: string
+    JWT_SECRET: string
   }
 }

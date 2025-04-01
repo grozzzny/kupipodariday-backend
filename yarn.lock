@@ -1047,6 +1047,19 @@
     path-to-regexp "8.2.0"
     tslib "2.8.1"
 
+"@nestjs/jwt@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/jwt/-/jwt-11.0.0.tgz#aef1590e70830c70fba0f59e9b17314dc4d36822"
+  integrity sha512-v7YRsW3Xi8HNTsO+jeHSEEqelX37TVWgwt+BcxtkG/OfXJEOs6GZdbdza200d6KqId1pJQZ6UPj1F0M6E+mxaA==
+  dependencies:
+    "@types/jsonwebtoken" "9.0.7"
+    jsonwebtoken "9.0.2"
+
+"@nestjs/mapped-types@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-2.1.0.tgz#b9b536b7c3571567aa1d0223db8baa1a51505a19"
+  integrity sha512-W+n+rM69XsFdwORF11UqJahn4J3xi4g/ZEOlJNL6KoW5ygWSmBB2p0S2BZ4FQeS/NDH72e6xIcu35SfJnE8bXw==
+
 "@nestjs/passport@11.0.5":
   version "11.0.5"
   resolved "https://registry.yarnpkg.com/@nestjs/passport/-/passport-11.0.5.tgz#dd3e506c2fb7ddc80fd1321c01cc1a0ca6d6b609"
@@ -1451,6 +1464,13 @@
   integrity sha512-uoe+GxEuHbvy12OUQct2X9JenKM3qAscquYymuQN4fMWG9DBQtykrQEFcAbVACF7qaLw9BePSodUL0kquqBJpQ==
   dependencies:
     "@types/ms" "*"
+    "@types/node" "*"
+
+"@types/jsonwebtoken@9.0.7":
+  version "9.0.7"
+  resolved "https://registry.yarnpkg.com/@types/jsonwebtoken/-/jsonwebtoken-9.0.7.tgz#e49b96c2b29356ed462e9708fc73b833014727d2"
+  integrity sha512-ugo316mmTYBl2g81zDFnZ7cfxlut3o+/EQdaP7J8QN2kY6lJ22hmQYCK5EHcJHbrW+dkCGSCPgbG8JtYj6qSrg==
+  dependencies:
     "@types/node" "*"
 
 "@types/methods@^1.1.4":
@@ -4340,7 +4360,7 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-jsonwebtoken@^9.0.0:
+jsonwebtoken@9.0.2, jsonwebtoken@^9.0.0:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-9.0.2.tgz#65ff91f4abef1784697d40952bb1998c504caaf3"
   integrity sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==

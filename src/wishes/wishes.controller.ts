@@ -6,6 +6,7 @@ import { GetUser } from '../auth/decorators/get-user.decorator'
 import { User } from '../users/entities/user.entity'
 import { Wish } from './entities/wish.entity'
 import { UpdateWishDto } from './dto/update-wish.dto'
+import { SkipAuth } from '../auth/decorators/skip-auth.decorator'
 
 @Controller('wishes')
 @UseGuards(JwtAuthGuard)
@@ -18,11 +19,13 @@ export class WishesController {
   }
 
   @Get('last')
+  @SkipAuth()
   findLast(): Promise<Wish[]> {
     return this.wishesService.findLast()
   }
 
   @Get('top')
+  @SkipAuth()
   findTop(): Promise<Wish[]> {
     return this.wishesService.findTop()
   }

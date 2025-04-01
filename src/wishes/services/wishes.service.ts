@@ -33,8 +33,7 @@ export class WishesService {
   async findLast(): Promise<Wish[]> {
     const wishes = await this.wishesRepository.find({
       order: { createdAt: 'DESC' },
-      relations: ['owner', 'offers', 'offers.user'],
-      take: 1
+      relations: ['owner', 'offers', 'offers.user']
     })
 
     return plainToInstance(Wish, wishes)
@@ -43,8 +42,7 @@ export class WishesService {
   async findTop(): Promise<Wish[]> {
     const wishes = await this.wishesRepository.find({
       order: { copied: 'DESC' },
-      relations: ['owner', 'offers', 'offers.user'],
-      take: 1
+      relations: ['owner', 'offers', 'offers.user']
     })
 
     return plainToInstance(Wish, wishes)
